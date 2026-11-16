@@ -6,9 +6,10 @@ namespace Atrium\Faq\Tests\Feature;
 
 use Atrium\Admin\Models\Language;
 use Atrium\Admin\Models\Site;
-use Atrium\Faq\FaqServiceProvider;
 use Atrium\Faq\Models\Category;
 use Atrium\Faq\Tests\TestCase;
+use Illuminate\Foundation\Application;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
 
 /**
  * The theme draws the FAQ page and each category's page; both carry the
@@ -152,14 +153,27 @@ final class PublicPageTest extends TestCase
         $this->assertStringNotContainsString('/faq/hidden', $xml);
     }
 
-    public function test_the_app_may_move_the_page_or_turn_it_off(): void
+    #[DefineEnvironment('movedToHelp')]
+    public function test_the_site_may_move_the_page(): void
     {
-        config(['atrium.public_urls.'.Category::class => ['prefix' => 'help']]);
-        (new FaqServiceProvider($this->app))->register();
-        $this->assertSame(['prefix' => 'help'], config('atrium.public_urls.'.Category::class));
+        $this->get('/help/delivery')->assertOk()->assertSee('How long does delivery take?');
+        $this->get('/faq/delivery')->assertNotFound();
+    }
 
-        config(['atrium.public_urls.'.Category::class => false]);
-        (new FaqServiceProvider($this->app))->register();
-        $this->assertFalse(config('atrium.public_urls.'.Category::class));
+    #[DefineEnvironment('withoutPages')]
+    public function test_the_site_may_leave_the_faq_without_pages(): void
+    {
+        $this->get('/faq')->assertNotFound();
+        $this->get('/faq/delivery')->assertNotFound();
+    }
+
+    protected function movedToHelp(Application $app): void
+    {
+        $app['config']->set('atrium.public_urls.'.Category::class, ['prefix' => 'help']);
+    }
+
+    protected function withoutPages(Application $app): void
+    {
+        $app['config']->set('atrium.public_urls.'.Category::class, false);
     }
 }

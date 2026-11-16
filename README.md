@@ -6,8 +6,10 @@ Questions and answers for [Atrium](https://github.com/AlveBy/atrium): grouped in
 
 ```bash
 composer require alveby/atrium-faq
-php artisan migrate
+php artisan atrium:module:install alveby/atrium-faq
 ```
+
+`atrium:module:install` creates the tables and turns the module on; `atrium:module:remove alveby/atrium-faq` turns it off and asks whether to keep the questions.
 
 Two modules appear in the admin menu:
 
@@ -30,7 +32,7 @@ A question opens its answer on a click (`<details>`). Each page puts the FAQPage
 
 Only active questions of active categories are shown, by sort; a question appears in a language when both the question and the answer are written in it.
 
-To move the pages, list the categories in `config/atrium.php` → `public_urls` yourself; `false` leaves the FAQ without pages:
+To move the pages, list the categories in `config/atrium.php` → `public_urls` yourself (the site's rule wins over the module's); `false` leaves the FAQ without pages:
 
 ```php
 'public_urls' => [

@@ -41,6 +41,18 @@
         }
     },
     "extra": {
+        "atrium": {
+            "resources": [
+                "Atrium\\Faq\\Models\\Category",
+                "Atrium\\Faq\\Models\\Question"
+            ],
+            "public_urls": {
+                "Atrium\\Faq\\Models\\Category": {
+                    "prefix": "faq"
+                }
+            },
+            "migrations": "database/migrations"
+        },
         "laravel": {
             "providers": [
                 "Atrium\\Faq\\FaqServiceProvider"

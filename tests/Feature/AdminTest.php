@@ -16,11 +16,8 @@ use Inertia\Testing\AssertableInertia;
  */
 final class AdminTest extends TestCase
 {
-    public function test_the_package_adds_both_modules_and_the_faq_page(): void
+    public function test_the_installed_module_brings_both_lists(): void
     {
-        $this->assertContains(Category::class, config('atrium.resources'));
-        $this->assertContains(Question::class, config('atrium.resources'));
-
         $this->actingAs($this->admin(), 'admin')
             ->get('/admin/faq_categories')
             ->assertOk()
@@ -28,6 +25,10 @@ final class AdminTest extends TestCase
                 ->component('Admin/Resource/Index')
                 ->where('routeName', 'admin.faq_categories')
                 ->where('title', 'FAQ'));
+
+        $this->get('/admin/faq_questions')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page->where('title', 'FAQ questions'));
     }
 
     public function test_categories_are_created_edited_and_deleted(): void

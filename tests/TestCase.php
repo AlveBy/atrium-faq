@@ -41,6 +41,7 @@ abstract class TestCase extends Orchestra
         $target = env('DB_CONNECTION');
         $config->set('database.default', in_array($target, ['mysql', 'pgsql'], true) ? $target : 'testing');
         $config->set('atrium.demo', false);
+        $config->set('atrium.modules', ['alveby/atrium-faq']);
         $config->set('atrium.auth.two_factor.enabled', false);
         $config->set('atrium.dashboard.timings.enabled', false);
     }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Atrium\Faq;
 
 use Atrium\Faq\Models\Category;
-use Atrium\Faq\Models\Question;
 use Atrium\Theme\RecordView;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
@@ -14,23 +13,17 @@ use Illuminate\Support\ServiceProvider;
 
 final class FaqServiceProvider extends ServiceProvider
 {
+    /**
+     * The models, the /faq page and the migrations come from extra.atrium in
+     * composer.json, once `atrium:module:install alveby/atrium-faq` has run.
+     */
     public function register(): void
     {
-        config()->push('atrium.resources', Category::class);
-        config()->push('atrium.resources', Question::class);
-
-        // The FAQ page lives at /faq unless the app lists the categories in
-        // public_urls itself: another prefix, or false for no page.
-        if (! array_key_exists(Category::class, (array) config('atrium.public_urls', []))) {
-            config()->set('atrium.public_urls.'.Category::class, ['prefix' => 'faq']);
-        }
-
         $this->app->singleton(Faq::class);
     }
 
     public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'atrium-faq');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'atrium-faq');
 
