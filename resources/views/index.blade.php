@@ -1,4 +1,8 @@
 {{--
+    This file is part of Atrium (https://github.com/AlveBy/atrium).
+    Copyright (c) 2026 AlveBy. Licensed under the MIT License, see LICENSE.
+--}}
+{{--
     The FAQ page: every category with its questions, drawn inside the
     theme's frame. The theme passes the categories as `records`; the
     questions and the FAQPage structured data come from FaqServiceProvider.

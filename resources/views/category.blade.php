@@ -1,3 +1,7 @@
+{{--
+    This file is part of Atrium (https://github.com/AlveBy/atrium).
+    Copyright (c) 2026 AlveBy. Licensed under the MIT License, see LICENSE.
+--}}
 {{-- One category of the FAQ with its questions, inside the theme's frame. --}}
 @extends('atrium-theme::layout', [
     'metaTitle' => $page->seoTitle(),
