@@ -53,6 +53,15 @@ abstract class TestCase extends Orchestra
         PublicUrl::forgetPaths();
     }
 
+    /**
+     * On MySQL and PostgreSQL the whole suite shares one database, set up by
+     * whichever package's tests run first: the FAQ tables come with these.
+     */
+    protected function defineDatabaseMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+    }
+
     protected function admin(): AdminUser
     {
         $admin = AdminUser::query()->create([

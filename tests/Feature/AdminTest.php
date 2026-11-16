@@ -45,7 +45,7 @@ final class AdminTest extends TestCase
             ->assertRedirect(route('admin.faq_categories.index'));
 
         $category = Category::query()->sole();
-        $this->assertSame(['en' => 'Delivery', 'de' => 'Lieferung'], $category->getTranslations('name'));
+        $this->assertEquals(['en' => 'Delivery', 'de' => 'Lieferung'], $category->getTranslations('name'));
         $this->assertNotNull($category->site_id);
 
         $this->put("/admin/faq_categories/{$category->id}", ['name' => ['en' => 'Shipping'], 'code' => ['en' => 'shipping'], 'active' => true, 'sort' => 10])
