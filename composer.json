@@ -51,7 +51,8 @@
                     "prefix": "faq"
                 }
             },
-            "migrations": "database/migrations"
+            "migrations": "database/migrations",
+            "demo": "Atrium\\Faq\\Database\\FaqDemoSeeder"
         },
         "laravel": {
             "providers": [

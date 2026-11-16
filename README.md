@@ -9,6 +9,8 @@ composer require alveby/atrium-faq
 php artisan atrium:module:install alveby/atrium-faq
 ```
 
+Add `--demo` to fill it with three categories of a shop's questions (delivery, payment, warranty) in English, German and Russian; the German and Russian texts show once those languages are on.
+
 `atrium:module:install` creates the tables and turns the module on; `atrium:module:remove alveby/atrium-faq` turns it off and asks whether to keep the questions.
 
 Two modules appear in the admin menu:
@@ -68,7 +70,7 @@ From the repository root:
 vendor/bin/phpunit packages/faq/tests
 ```
 
-The tests cover the admin forms, the pages in two languages and on two sites, the structured data and the component, on SQLite, MySQL and PostgreSQL.
+The tests cover the admin forms, the pages in two languages and on two sites, the structured data, the component and the demo, on SQLite, MySQL and PostgreSQL.
 
 ## Contributing
 
