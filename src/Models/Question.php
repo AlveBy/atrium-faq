@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace Atrium\Faq\Models;
 
+use Atrium\Admin\Cache\CachesRecords;
 use Atrium\Admin\Columns\BooleanColumn;
 use Atrium\Admin\Columns\TextColumn;
 use Atrium\Admin\Contracts\Administrable;
+use Atrium\Admin\Contracts\Cacheable;
 use Atrium\Admin\Fields\BelongsToField;
 use Atrium\Admin\Fields\CheckboxField;
 use Atrium\Admin\Fields\ContentField;
@@ -32,9 +34,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $active
  * @property int $sort
  */
-class Question extends Model implements Administrable
+class Question extends Model implements Administrable, Cacheable
 {
-    use BelongsToSite, InteractsWithAdmin, Translatable;
+    use BelongsToSite, CachesRecords, InteractsWithAdmin, Translatable;
 
     protected $table = 'faq_questions';
 

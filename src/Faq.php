@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Atrium\Faq;
 
+use Atrium\Admin\Cache\Card;
 use Atrium\Faq\Models\Category;
 use Atrium\Faq\Models\Question;
 use Illuminate\Support\Collection;
@@ -36,14 +37,16 @@ final class Faq
             $query->whereKey(collect($categories)->map(fn (Category $category): mixed => $category->getKey())->all());
         }
 
-        $order = $query->pluck('id')->flip();
+        // Ids from the record cache, the questions from their cards.
+        $order = collect($query->cachedIds()->ids)->flip();
 
-        return Question::query()
+        return collect(Question::query()
             ->whereIn('category_id', $order->keys())
             ->where('active', true)
             ->orderBy('sort')
             ->orderBy('id')
-            ->get()
+            ->cachedCards(dependsOn: [Category::class]))
+            ->map(static fn (Card $card): Question => $card->model(Question::class))
             ->filter(fn (Question $question): bool => $question->translated('question') !== '' && $question->translated('answer') !== '')
             ->sortBy(fn (Question $question): int => $order[$question->category_id], SORT_NUMERIC)
             ->values();
