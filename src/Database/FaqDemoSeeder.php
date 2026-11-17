@@ -10,12 +10,11 @@ declare(strict_types=1);
 namespace Atrium\Faq\Database;
 
 use Atrium\Admin\Modules\DemoSeeder;
-use Atrium\Admin\Support\Sites;
 use Atrium\Faq\Models\Category;
 use Atrium\Faq\Models\Question;
 
 /**
- * Questions buyers of the demo shop ask, on the default site, in English,
+ * Questions buyers of the demo shop ask, on the current site (the default one when installing), in English,
  * German and Russian. The German and Russian texts show once those
  * languages are on (the News demo adds them).
  */
@@ -26,8 +25,6 @@ final class FaqDemoSeeder extends DemoSeeder
         if (Category::query()->withoutGlobalScopes()->exists()) {
             return false;
         }
-
-        $site = app(Sites::class)->default();
 
         $faq = [
             [[
@@ -78,7 +75,7 @@ final class FaqDemoSeeder extends DemoSeeder
         $sort = 0;
 
         foreach ($faq as [$names, $questions]) {
-            $category = new Category(['site_id' => $site->id, 'sort' => $sort += 100]);
+            $category = new Category(['sort' => $sort += 100]);
 
             foreach ($names as $language => [$name, $code]) {
                 $category->setTranslation('name', $language, $name)->setTranslation('code', $language, $code);
@@ -87,7 +84,7 @@ final class FaqDemoSeeder extends DemoSeeder
             $category->save();
 
             foreach ($questions as $index => $texts) {
-                $question = new Question(['site_id' => $site->id, 'category_id' => $category->id, 'sort' => ($index + 1) * 100]);
+                $question = new Question(['category_id' => $category->id, 'sort' => ($index + 1) * 100]);
 
                 foreach ($texts as $language => [$text, $answer]) {
                     $question->setTranslation('question', $language, $text)->setTranslation('answer', $language, $answer);

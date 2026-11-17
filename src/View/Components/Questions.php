@@ -57,7 +57,7 @@ final class Questions extends Component
             return Category::query()->find((int) $this->category);
         }
 
-        foreach (array_unique([app()->getLocale(), app(ContentLanguages::class)->default()]) as $language) {
+        foreach ([app()->getLocale(), app(ContentLanguages::class)->default()] as $language) {
             $category = Category::query()->where('code->'.$language, $this->category)->first();
 
             if ($category !== null) {

@@ -38,10 +38,6 @@ final class Faq
 
         $order = $query->pluck('id')->flip();
 
-        if ($order->isEmpty()) {
-            return new Collection;
-        }
-
         return Question::query()
             ->whereIn('category_id', $order->keys())
             ->where('active', true)
@@ -49,7 +45,7 @@ final class Faq
             ->orderBy('id')
             ->get()
             ->filter(fn (Question $question): bool => $question->translated('question') !== '' && $question->translated('answer') !== '')
-            ->sortBy(fn (Question $question): int => (int) $order[$question->category_id], SORT_NUMERIC)
+            ->sortBy(fn (Question $question): int => $order[$question->category_id], SORT_NUMERIC)
             ->values();
     }
 

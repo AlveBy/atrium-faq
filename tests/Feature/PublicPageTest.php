@@ -135,6 +135,26 @@ final class PublicPageTest extends TestCase
         $this->get('/de/faq')->assertOk()->assertSee('Lieferung')->assertDontSee('Payment');
     }
 
+    public function test_a_category_without_a_name_in_the_language_hides_its_questions_there(): void
+    {
+        Language::query()->create(['code' => 'de', 'name' => 'Deutsch']);
+        $this->delivery->update(['name' => ['en' => 'Delivery', 'de' => 'Lieferung'], 'code' => ['en' => 'delivery', 'de' => 'lieferung']]);
+        $this->question($this->delivery, 'Is it free?', '<p>Yes.</p>', [
+            'question' => ['en' => 'Is it free?', 'de' => 'Ist sie kostenlos?'],
+            'answer' => ['en' => '<p>Yes.</p>', 'de' => '<p>Ja.</p>'],
+        ]);
+        // Written in German, but its category has no German name, so no German page.
+        $this->question($this->payment, 'Zahlung?', '<p>Karte.</p>', [
+            'question' => ['de' => 'Zahlung?'],
+            'answer' => ['de' => '<p>Karte.</p>'],
+        ]);
+
+        $response = $this->get('/de/faq')->assertOk()->assertSee('Ist sie kostenlos?')->assertDontSee('Zahlung?');
+
+        $this->assertSame(['Ist sie kostenlos?'], array_column($this->jsonLd((string) $response->getContent())['mainEntity'], 'name'));
+        $this->get('/de/faq/payment')->assertNotFound();
+    }
+
     public function test_each_site_has_its_own_questions(): void
     {
         $site = Site::query()->create(['code' => 'second', 'name' => 'Second', 'folder' => 'site2']);
