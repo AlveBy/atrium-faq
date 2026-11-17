@@ -13,8 +13,12 @@ use Atrium\Admin\Models\Language;
 use Atrium\Admin\Models\Site;
 use Atrium\Faq\Models\Category;
 use Atrium\Faq\Tests\TestCase;
+use Atrium\Theme\Pages;
+use Atrium\Theme\RecordView;
 use Illuminate\Foundation\Application;
+use Illuminate\Pagination\Paginator;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * The theme draws the FAQ page and each category's page; both carry the
@@ -200,5 +204,63 @@ final class PublicPageTest extends TestCase
     protected function withoutPages(Application $app): void
     {
         $app['config']->set('atrium.public_urls.'.Category::class, false);
+    }
+
+    /**
+     * @return array<string,array{0:?string}>
+     */
+    public static function pagesOfNoCategory(): array
+    {
+        return ['no page at all' => [null], 'a page of another record' => ['question']];
+    }
+
+    #[DataProvider('pagesOfNoCategory')]
+    public function test_a_category_page_that_is_not_one_of_a_category_has_no_questions(?string $kind): void
+    {
+        $view = view('atrium-faq::category', ['page' => $kind === null ? null : new RecordView($this->payment->questions()->firstOrFail(), $this->app->make(Pages::class))]);
+
+        $this->app['events']->dispatch('composing: atrium-faq::category', [$view]);
+
+        $this->assertCount(0, $view->getData()['questions']);
+        $this->assertSame('', (string) $view->getData()['jsonLd']);
+    }
+
+    public function test_a_category_page_of_a_category_has_its_questions(): void
+    {
+        $view = view('atrium-faq::category', ['page' => new RecordView($this->payment, $this->app->make(Pages::class))]);
+
+        $this->app['events']->dispatch('composing: atrium-faq::category', [$view]);
+
+        $this->assertSame(['Can I pay by card?'], $view->getData()['questions']->map(fn ($q) => $q->getTranslation('question', 'en'))->all());
+        $this->assertStringContainsString('Can I pay by card?', (string) $view->getData()['jsonLd']);
+    }
+
+    public function test_the_faq_page_ignores_records_that_are_not_pages_of_a_category(): void
+    {
+        $stranger = new class($this->payment)
+        {
+            public function __construct(public Category $record) {}
+
+            public function url(): string
+            {
+                return '/stranger';
+            }
+        };
+        $question = new RecordView($this->payment->questions()->firstOrFail(), $this->app->make(Pages::class));
+        $view = view('atrium-faq::index', ['records' => new Paginator([$stranger, $question], 10)]);
+
+        $this->app['events']->dispatch('composing: atrium-faq::index', [$view]);
+
+        $this->assertSame([], $view->getData()['groups']);
+    }
+
+    public function test_the_theme_draws_the_faq_pages_with_the_package_views(): void
+    {
+        $this->assertSame('atrium-faq::index', Category::themeView('index'));
+        $this->assertSame('atrium-faq::category', Category::themeView('page'));
+        $this->assertNull(Category::themeView('other'));
+        // Model::__callStatic would hide a protected method, so the contract
+        // the theme documents (a public static method) is checked as declared.
+        $this->assertTrue((new \ReflectionMethod(Category::class, 'themeView'))->isPublic());
     }
 }
