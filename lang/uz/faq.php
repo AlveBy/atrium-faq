@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 return [
     'modules' => [
-        'categories' => 'Savol-javoblar',
+        'categories' => 'FAQ boʻlimlari',
         'questions' => 'FAQ savollari',
     ],
+    // What a visitor reads over the FAQ page; the admin's own name of the module is above.
+    'title' => 'Savol-javoblar',
     'create' => [
         'category' => 'Boʻlim qoʻshish',
         'question' => 'Savol qoʻshish',

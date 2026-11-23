@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 return [
     'modules' => [
-        'categories' => 'よくある質問',
+        'categories' => 'FAQのセクション',
         'questions' => 'FAQの質問',
     ],
+    // What a visitor reads over the FAQ page; the admin's own name of the module is above.
+    'title' => 'よくある質問',
     'create' => [
         'category' => 'カテゴリーを追加',
         'question' => '質問を追加',

@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 return [
     'modules' => [
-        'categories' => 'Пытанні і адказы',
+        'categories' => 'Раздзелы FAQ',
         'questions' => 'Пытанні FAQ',
     ],
+    // What a visitor reads over the FAQ page; the admin's own name of the module is above.
+    'title' => 'Пытанні і адказы',
     'create' => [
         'category' => 'Дадаць раздзел',
         'question' => 'Дадаць пытанне',

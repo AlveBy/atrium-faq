@@ -62,6 +62,12 @@ class Category extends Model implements Administrable, Cacheable
         return __('atrium-faq::faq.modules.categories');
     }
 
+    /** What the site calls the FAQ: the page heading and the menu item. */
+    public static function getPublicLabel(): string
+    {
+        return __('atrium-faq::faq.title');
+    }
+
     public static function getAdminCreateLabel(): string
     {
         return __('atrium-faq::faq.create.category');

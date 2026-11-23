@@ -14,6 +14,7 @@ use Atrium\Faq\Models\Category;
 use Atrium\Faq\Models\Question;
 use Atrium\Faq\Tests\TestCase;
 use Inertia\Testing\AssertableInertia;
+use ReflectionMethod;
 
 /**
  * Editors keep the categories and the questions in the admin, like any
@@ -29,11 +30,36 @@ final class AdminTest extends TestCase
             ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('Admin/Resource/Index')
                 ->where('routeName', 'admin.faq_categories')
-                ->where('title', 'FAQ'));
+                ->where('title', 'FAQ sections'));
 
         $this->get('/admin/faq_questions')
             ->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page->where('title', 'FAQ questions'));
+    }
+
+    public function test_the_two_modules_are_not_named_alike_in_any_language(): void
+    {
+        $locales = array_map('basename', glob(__DIR__.'/../../lang/*', GLOB_ONLYDIR) ?: []);
+        $this->assertCount(15, $locales);
+
+        foreach ($locales as $locale) {
+            $lines = require __DIR__."/../../lang/{$locale}/faq.php";
+
+            $this->assertNotSame($lines['modules']['questions'], $lines['modules']['categories'], $locale);
+        }
+    }
+
+    public function test_the_modules_are_sections_and_questions_in_the_menu_and_the_crumbs(): void
+    {
+        $this->assertSame('FAQ sections', Category::getAdminLabel());
+        $this->assertSame('FAQ questions', Question::getAdminLabel());
+
+        app()->setLocale('ru');
+        $this->assertSame('Разделы FAQ', Category::getAdminLabel());
+        $this->assertSame('Вопросы FAQ', Question::getAdminLabel());
+        $this->assertSame('Разделы FAQ', (new Category)->getAdminBreadcrumbs()[0]['label']);
+        $this->assertSame('Вопросы и ответы', Category::getPublicLabel(), 'visitors keep the old name');
+        $this->assertTrue((new ReflectionMethod(Category::class, 'getPublicLabel'))->isPublic(), 'the theme asks it from outside the model');
     }
 
     public function test_categories_are_created_edited_and_deleted(): void

@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 return [
     'modules' => [
-        'categories' => '常见问题',
+        'categories' => '常见问题分类',
         'questions' => '常见问题条目',
     ],
+    // What a visitor reads over the FAQ page; the admin's own name of the module is above.
+    'title' => '常见问题',
     'create' => [
         'category' => '添加分类',
         'question' => '添加问题',

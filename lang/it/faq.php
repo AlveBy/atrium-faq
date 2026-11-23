@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 return [
     'modules' => [
-        'categories' => 'FAQ',
+        'categories' => 'Sezioni FAQ',
         'questions' => 'Domande FAQ',
     ],
+    // What a visitor reads over the FAQ page; the admin's own name of the module is above.
+    'title' => 'FAQ',
     'create' => [
         'category' => 'Aggiungi una categoria',
         'question' => 'Aggiungi una domanda',

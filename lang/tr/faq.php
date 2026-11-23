@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 return [
     'modules' => [
-        'categories' => 'SSS',
+        'categories' => 'SSS bölümleri',
         'questions' => 'SSS soruları',
     ],
+    // What a visitor reads over the FAQ page; the admin's own name of the module is above.
+    'title' => 'SSS',
     'create' => [
         'category' => 'Kategori ekle',
         'question' => 'Soru ekle',
