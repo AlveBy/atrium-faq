@@ -98,7 +98,7 @@ class Question extends Model implements Administrable, Cacheable
             CheckboxField::make('active')->label(__('atrium::fields.standard.active'))->default(true),
             BelongsToField::make('category_id')->label(__('atrium-faq::faq.fields.category'))->model(Category::class)->required(),
             TextField::make('question')->label(__('atrium-faq::faq.fields.question'))->required(),
-            ContentField::make('answer')->label(__('atrium-faq::faq.fields.answer'))->required(),
+            ContentField::make('answer')->label(__('atrium-faq::faq.fields.answer'))->required()->ai(from: 'question'),
             NumberField::make('sort')->label(__('atrium::fields.standard.sort'))->default(500),
         ];
     }
