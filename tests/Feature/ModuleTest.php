@@ -12,6 +12,7 @@ namespace Atrium\Faq\Tests\Feature;
 use Atrium\Faq\Faq;
 use Atrium\Faq\FaqServiceProvider;
 use Atrium\Faq\Models\Category;
+use Atrium\Faq\Models\Question;
 use Atrium\Faq\Tests\TestCase;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -123,6 +124,18 @@ final class ModuleTest extends TestCase
         $this->assertCount(0, $other->questions);
         $this->assertSame($category->id, $question->category?->id);
         $this->assertSame($category->id, $question->category()->sole()->id);
+    }
+
+    public function test_the_questions_are_offered_as_a_board_of_categories_kept_in_order(): void
+    {
+        $views = Question::getAdministrationViews();
+
+        $this->assertCount(1, $views);
+        $this->assertSame('kanban', $views[0]->type());
+        $this->assertSame('category_id', $views[0]->getField());
+        $this->assertSame('question', $views[0]->getTitleField());
+        $this->assertSame(['active'], $views[0]->getCards());
+        $this->assertSame('sort', $views[0]->getOrder());
     }
 
     public function test_the_service_and_the_component_are_registered(): void

@@ -22,6 +22,7 @@ use Atrium\Admin\Fields\TextField;
 use Atrium\Admin\Traits\BelongsToSite;
 use Atrium\Admin\Traits\InteractsWithAdmin;
 use Atrium\Admin\Traits\Translatable;
+use Atrium\Admin\Views\KanbanView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -111,5 +112,10 @@ class Question extends Model implements Administrable, Cacheable
             TextColumn::make('sort')->label(__('atrium::fields.standard.sort'))->sortable(),
             BooleanColumn::make('active')->label(__('atrium::fields.standard.active')),
         ];
+    }
+
+    public static function getAdministrationViews(): array
+    {
+        return [KanbanView::make('category_id')->title('question')->cards('active')->order('sort')];
     }
 }
